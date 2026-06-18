@@ -17,6 +17,7 @@ if(NOT WIN32)
   list(APPEND DH_AG95_CORE_SOURCES src/socketcan_transport.cpp)
 endif()
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_library(dh_ag95_core ${DH_AG95_CORE_SOURCES})
 add_library(dh_ag95::dh_ag95_core ALIAS dh_ag95_core)
 
