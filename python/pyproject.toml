@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dh-ag95"
+version = "0.1.0"
+description = "Standalone DH-Robotics AG-95 Python driver"
+authors = [{name = "tdc", email = "lihao_0630@qq.com"}]
+requires-python = ">=3.8"
+dependencies = ["pyserial>=3.5", "PyYAML>=6.0"]
+
+[project.optional-dependencies]
+can = ["python-can>=4.0"]
+pcan = ["python-can>=4.0"]
+
+[tool.setuptools.packages.find]
+where = ["."]

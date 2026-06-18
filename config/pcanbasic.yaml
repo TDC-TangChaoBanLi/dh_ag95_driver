@@ -1,0 +1,8 @@
+gripper_id: 1
+transport_type: pcanbasic
+command_interval_ms: 30
+read_timeout_ms: 500
+default_force_percent: 30
+pcanbasic:
+  channel: PCAN_USBBUS1
+  bitrate: 500000

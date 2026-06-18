@@ -1,0 +1,9 @@
+gripper_id: 1
+transport_type: socketcan
+command_interval_ms: 50
+read_timeout_ms: 500
+auto_initialize: false
+default_force_percent: 30
+socketcan:
+  interface_name: can0
+  bitrate: 500000
