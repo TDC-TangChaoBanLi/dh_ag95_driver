@@ -8,7 +8,6 @@ set(DH_AG95_CORE_SOURCES
   src/ag95_gripper.cpp
   src/serial_port.cpp
   src/official_serial_transport.cpp
-  src/slcan_transport.cpp
   src/pcanbasic_transport.cpp
   src/modbus_transport.cpp
 )

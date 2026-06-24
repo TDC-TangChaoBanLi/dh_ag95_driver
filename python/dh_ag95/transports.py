@@ -2,7 +2,7 @@ import time
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from .config import OfficialSerialConfig, SocketCanConfig, SlcanConfig, PcanBasicConfig, ModbusRtuConfig
+from .config import OfficialSerialConfig, SocketCanConfig, PcanBasicConfig, ModbusRtuConfig
 from .protocol import Ag95Frame, Ag95Protocol, ProtocolError
 
 
@@ -101,66 +101,6 @@ class SocketCanTransport(Transport):
         if len(msg.data) != 8:
             raise ProtocolError("received CAN frame with DLC != 8")
         return Ag95Protocol.from_can_payload(msg.arbitration_id, bytes(msg.data))
-
-
-class SlcanTransport(Transport):
-    def __init__(self, config: SlcanConfig):
-        self.config = config
-        self.ser = None
-
-    def open(self) -> None:
-        import serial
-        self.ser = serial.Serial(self.config.port, self.config.serial_baudrate, timeout=0)
-        if self.config.configure_on_open:
-            self._write_line("C")
-            self._write_line("S" + self._bitrate_code(self.config.can_bitrate))
-            self._write_line("O")
-
-    def close(self) -> None:
-        if self.ser:
-            if self.config.configure_on_open:
-                try:
-                    self._write_line("C")
-                except Exception:
-                    pass
-            self.ser.close()
-            self.ser = None
-
-    @staticmethod
-    def _bitrate_code(bitrate: int) -> str:
-        mapping = {10000:"0", 20000:"1", 50000:"2", 100000:"3", 125000:"4", 250000:"5", 500000:"6", 800000:"7", 1000000:"8"}
-        if bitrate not in mapping:
-            raise TransportError("unsupported SLCAN bitrate")
-        return mapping[bitrate]
-
-    def _write_line(self, line: str) -> None:
-        self.ser.write((line + "\r").encode("ascii"))
-        self.ser.flush()
-
-    def send(self, frame: Ag95Frame) -> None:
-        data = Ag95Protocol.to_can_payload(frame)
-        self._write_line(f"t{frame.id & 0x7FF:03X}8" + data.hex().upper())
-
-    def receive(self, timeout_s: float) -> Ag95Frame:
-        deadline = time.monotonic() + timeout_s
-        line = bytearray()
-        while time.monotonic() < deadline:
-            b = self.ser.read(1)
-            if not b:
-                time.sleep(0.001); continue
-            if b in (b"\r", b"\n"):
-                if line:
-                    s = line.decode("ascii")
-                    if not s.startswith("t"):
-                        line.clear(); continue
-                    can_id = int(s[1:4], 16)
-                    dlc = int(s[4], 16)
-                    if dlc != 8:
-                        raise ProtocolError("SLCAN DLC != 8")
-                    return Ag95Protocol.from_can_payload(can_id, bytes.fromhex(s[5:21]))
-            else:
-                line.extend(b)
-        raise TimeoutError("timeout waiting for SLCAN frame")
 
 
 class PcanBasicTransport(Transport):
