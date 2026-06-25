@@ -96,6 +96,10 @@ struct Ag95Config {
   /// @brief Default gripping force percentage used when no explicit force is set.
   int default_force_percent = 30;
 
+  /// @brief Gripper model identifier.  Determines physical parameters (stroke, max force).
+  ///        Currently supported: "ag-160-95" (stroke=0.095 m, max force=160 N).
+  std::string gripper_model = "ag-160-95";
+
   OfficialSerialConfig official_serial;
   SocketCanConfig socketcan;
   PcanBasicConfig pcanbasic;

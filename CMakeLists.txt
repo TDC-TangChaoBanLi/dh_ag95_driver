@@ -6,6 +6,7 @@ option(DH_AG95_BUILD_EXAMPLES "Build examples" ON)
 set(DH_AG95_CORE_SOURCES
   src/protocol.cpp
   src/ag95_gripper.cpp
+  src/gripper_model.cpp
   src/serial_port.cpp
   src/official_serial_transport.cpp
   src/pcanbasic_transport.cpp
